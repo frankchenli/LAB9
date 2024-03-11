@@ -8,7 +8,6 @@ path5 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_10/*.dcm';
 path6 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21_34x34x4_14_31_2_24slc_LT1800_16TI_800_3800_4/*.dcm';
 
 
-
 filename1 = natsortfiles(dir(path1));
 filename2 = natsortfiles(dir(path2));
 filename3 = natsortfiles(dir(path3));
@@ -47,6 +46,6 @@ end
 
 
 figure;
-imshow(data(4).pasl,[500 20000]);
+imshow(data(1).cbf6,[500 20000]);
 figure;
-imshow(data(5).pasl,[500 20000])
+imshow(data(1).cbf10,[])
