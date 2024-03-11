@@ -9,19 +9,44 @@ path6 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21
 
 
 
-filename1 = dir(path6);
+filename1 = natsortfiles(dir(path1));
+filename2 = natsortfiles(dir(path2));
+filename3 = natsortfiles(dir(path3));
+filename4 = natsortfiles(dir(path4));
+filename5 = natsortfiles(dir(path5));
+filename6 = natsortfiles(dir(path6));
 
 
 for i = 1:numel(filename1)
-    data(i).cbf6 = dicomread(filename1(i).name);
+    data(i).pasl = dicomread(filename1(i).name);
     data(i).info = dicominfo(filename1(i).name);
     data(i).series = data(i).info.SeriesNumber;
 end
 
+for i = 1:numel(filename2)
+    data(i).pw5 = dicomread(filename2(i).name);
+    % data(i).info = dicominfo(filename1(i).name);
+    % data(i).series = data(i).info.SeriesNumber;
+end
 
-% for i = 1:numel(filename1)
-%     figure;
-%     imshow(data(i).cbf6,[]);
-% end
+data(1).pw10 = dicomread(filename3(1).name);
 
-imshow(data(30).cbf6,[500 20000]);
+for i = 1:numel(filename4)
+    data(i).cbf6 = dicomread(filename4(i).name);
+    % data(i).info = dicominfo(filename1(i).name);
+    % data(i).series = data(i).info.SeriesNumber;
+end
+
+data(1).cbf10 = dicomread(filename5(1).name);
+
+for i = 1:numel(filename6)
+    data(i).pcasl = dicomread(filename6(i).name);
+    % data(i).info = dicominfo(filename1(i).name);
+    % data(i).series = data(i).info.SeriesNumber;
+end
+
+
+figure;
+imshow(data(4).pasl,[500 20000]);
+figure;
+imshow(data(5).pasl,[500 20000])
