@@ -1,51 +1,31 @@
 clear all;
 close all;
-path1 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/pasl_ti1_700_ri2000_8/*.dcm';
-path2 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_5/*.dcm';
-path3 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_9/*.dcm';
-path4 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_6/*.dcm';
-path5 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_10/*.dcm';
-path6 = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21_34x34x4_14_31_2_24slc_LT1800_16TI_800_3800_4/*.dcm';
+path(1).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/pasl_ti1_700_ri2000_8/*.dcm';
+path(2).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_5/*.dcm';
+path(3).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_9/*.dcm';
+path(4).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_6/*.dcm';
+path(5).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_10/*.dcm';
+path(6).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21_34x34x4_14_31_2_24slc_LT1800_16TI_800_3800_4/*.dcm';
+path(7).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_2898_TI2_602_Best_11/*.dcm';
+path(8).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_3426_TI2_903_Best_13/*.dcm';
+label = ["PASL", "Perfusion Weighted 5", "Perfusion Weighted 9","relCBF6","relCBF10","PCASL", "DIR1", "DIR2" ];
 
 
-filename1 = natsortfiles(dir(path1));
-filename2 = natsortfiles(dir(path2));
-filename3 = natsortfiles(dir(path3));
-filename4 = natsortfiles(dir(path4));
-filename5 = natsortfiles(dir(path5));
-filename6 = natsortfiles(dir(path6));
-
-
-for i = 1:numel(filename1)
-    data(i).pasl = dicomread(filename1(i).name);
-    data(i).info = dicominfo(filename1(i).name);
-    data(i).paslTI = data(i).info.InversionTime;
+for i = 1:8
+    file = natsortfiles(dir(path(i).a));
+    for j = 1: numel(file)
+        data(i).image(j).each_image = dicomread(file(j).name);
+        data(i).image(j).info = dicominfo(file(j).name);
+        data(i).label = label(i);
+        if i == 4 || i == 5
+            a = 1;
+        else
+            data(i).image(j).TI = data(i).image(j).info.InversionTime;
+        end
+    end
 end
 
-for i = 1:numel(filename2)
-    data(i).pw5 = dicomread(filename2(i).name);
-    data(i).pw5info = dicominfo(filename1(i).name);
-    data(i).pw5TI = data(i).pw5info.InversionTime;
-end
 
-data(1).pw10 = dicomread(filename3(1).name);
+DIR = data(8).image;
+imshow(DIR(2).each_image,[17000 17100]);
 
-for i = 1:numel(filename4)
-    data(i).cbf6 = dicomread(filename4(i).name);
-    data(i).cbf6info = dicominfo(filename1(i).name);
-    data(i).cbf6TI = data(i).cbf6info.InversionTime;
-end
-
-data(1).cbf10 = dicomread(filename5(1).name);
-
-% for i = 1:numel(filename6)
-%     data(i).pcasl = dicomread(filename6(i).name);
-%     data(i).pcaslinfo = dicominfo(filename1(i).name);
-%     data(i).pcaslTI = data(i).pcaslinfo.InversionTime;
-% end
-
-
-figure;
-imshow(data(1).cbf6,[500 20000]);
-figure;
-imshow(data(1).cbf10,[])
