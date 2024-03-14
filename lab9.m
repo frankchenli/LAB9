@@ -19,30 +19,30 @@ filename6 = natsortfiles(dir(path6));
 for i = 1:numel(filename1)
     data(i).pasl = dicomread(filename1(i).name);
     data(i).info = dicominfo(filename1(i).name);
-    data(i).series = data(i).info.SeriesNumber;
+    data(i).paslTI = data(i).info.InversionTime;
 end
 
 for i = 1:numel(filename2)
     data(i).pw5 = dicomread(filename2(i).name);
-    % data(i).info = dicominfo(filename1(i).name);
-    % data(i).series = data(i).info.SeriesNumber;
+    data(i).pw5info = dicominfo(filename1(i).name);
+    data(i).pw5TI = data(i).pw5info.InversionTime;
 end
 
 data(1).pw10 = dicomread(filename3(1).name);
 
 for i = 1:numel(filename4)
     data(i).cbf6 = dicomread(filename4(i).name);
-    % data(i).info = dicominfo(filename1(i).name);
-    % data(i).series = data(i).info.SeriesNumber;
+    data(i).cbf6info = dicominfo(filename1(i).name);
+    data(i).cbf6TI = data(i).cbf6info.InversionTime;
 end
 
 data(1).cbf10 = dicomread(filename5(1).name);
 
-for i = 1:numel(filename6)
-    data(i).pcasl = dicomread(filename6(i).name);
-    % data(i).info = dicominfo(filename1(i).name);
-    % data(i).series = data(i).info.SeriesNumber;
-end
+% for i = 1:numel(filename6)
+%     data(i).pcasl = dicomread(filename6(i).name);
+%     data(i).pcaslinfo = dicominfo(filename1(i).name);
+%     data(i).pcaslTI = data(i).pcaslinfo.InversionTime;
+% end
 
 
 figure;
