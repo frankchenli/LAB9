@@ -11,11 +11,17 @@ path(8).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_3
 label = ["PASL", "Perfusion Weighted 5", "Perfusion Weighted 9","relCBF6","relCBF10","PCASL", "DIR1", "DIR2" ];
 
 
+
+
+
 for i = 1:8
     file = natsortfiles(dir(path(i).a));
     for j = 1: numel(file)
         data(i).image(j).each_image = dicomread(file(j).name);
         data(i).image(j).info = dicominfo(file(j).name);
+        data(i).image(j).each_image = (data(i).image(j).each_image*data(i).image(j).info.RescaleSlope)+data(i).image(j).info.RescaleIntercept;
+        data(i).image(j).scl_factor = data(i).image(j).info.RescaleSlope;
+        data(i).image(j).scl_interc= data(i).image(j).info.RescaleIntercept;
         data(i).label = label(i);
         if i == 4 || i == 5
             a = 1;
@@ -25,7 +31,10 @@ for i = 1:8
     end
 end
 
-
+information = data(1).image(1).info;
 DIR = data(8).image;
-imshow(DIR(2).each_image,[17000 17100]);
+DIR2 = data(7).image;
+imshow(DIR(1).each_image-DIR(2).each_image,[]);
+figure;
+imshow(DIR2(1).each_image-DIR2(2).each_image,[])
 
