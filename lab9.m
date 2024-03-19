@@ -1,17 +1,14 @@
 clear all;
 close all;
-path(1).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/pasl_ti1_700_ri2000_8/*.dcm';
-path(2).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_5/*.dcm';
-path(3).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_9/*.dcm';
-path(4).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_6/*.dcm';
-path(5).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_10/*.dcm';
-path(6).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21_34x34x4_14_31_2_24slc_LT1800_16TI_800_3800_4/*.dcm';
-path(7).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_2898_TI2_602_Best_11/*.dcm';
-path(8).a = './data/subject1/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_3426_TI2_903_Best_13/*.dcm';
+path(1).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/pasl_ti1_700_ri2000_8/*.dcm';
+path(2).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_5/*.dcm';
+path(3).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/Perfusion_Weighted_9/*.dcm';
+path(4).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_6/*.dcm';
+path(5).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/relCBF_10/*.dcm';
+path(6).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_pcasl_818_p21_34x34x4_14_31_2_24slc_LT1800_16TI_800_3800_4/*.dcm';
+path(7).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_2898_TI2_602_Best_11/*.dcm';
+path(8).a = './data/subject1_me/20240307_Beng278_Lab9/Bolar_Beng_278/tgse_DIR_TI1_3426_TI2_903_Best_13/*.dcm';
 label = ["PASL", "Perfusion Weighted 5", "Perfusion Weighted 9","relCBF6","relCBF10","PCASL", "DIR1", "DIR2" ];
-
-
-
 
 
 for i = 1:8
