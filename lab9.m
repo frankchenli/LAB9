@@ -27,6 +27,27 @@ for i = 1:8
         end
     end
 end
+%%
+
+all = zeros(320,320);
+for i = 2:2:64
+    label = data(6).image(i).each_image;
+    control = data(6).image(i+1).each_image;
+    data(6).image(i).diff = double(control-label);
+    all = all+data(6).image(i).diff;
+end
+
+for i = 2:2:32
+    data(6).image(i).average_diff = (data(6).image(i).diff+data(6).image(i+32).diff)/2;
+end
+
+figure
+imshow(data(6).image(2).average_diff,[]);
+figure
+imshow(data(6).image(4).average_diff,[]);
+figure;
+imshow(all/32,[]);
+
 
 information = data(1).image(1).info;
 DIR = data(8).image;
