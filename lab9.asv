@@ -65,14 +65,11 @@ imshow(white,[]);
 % all = zeros(320,320);
 
 Mo_g = double(data(6).image(1).each_image).*grey;
-Mo_g(Mo_g == 0) = 1;
+% Mo_g(Mo_g == 0) = 1;
 Mo_w = double(data(6).image(1).each_image).*white;
-Mo_w(Mo_w == 0) = 1;
+% Mo_w(Mo_w == 0) = 1;
 
 for i = 2:2:64
-    
-
-
     label_g = double(data(6).image(i).each_image).*grey;
     control_g = double(data(6).image(i+1).each_image).*grey;
     data(6).image(i).diff_gm = abs(double(control_g-label_g)./Mo_g);
@@ -80,7 +77,7 @@ for i = 2:2:64
 
     label_w = double(data(6).image(i).each_image).*white;
     control_w = double(data(6).image(i+1).each_image).*white;
-    data(6).image(i).diff_wm = abs(double(control_w-label_w)./Mo_w);
+    data(6).image(i).diff_wm = abs(double(control_w-label_w)/Mo_w);
 
     % all = all+data(6).image(i).diff;
 end
