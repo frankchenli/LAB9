@@ -50,15 +50,28 @@ PASL_ave = all/24;
 grey = double(data(7).image(1).each_image);
 white = double(data(8).image(1).each_image);
 
-grey(grey<12000) = 0;
-grey(grey>=12000) = 1;
+grey(grey<10000) = 0;
+grey(grey>=10000) = 1;
 
 
-white(white<14000) = 0;
-white(white>=14000) = 1;
+white(white<12000) = 0;
+white(white>=12000) = 1;
 
-imshow(white,[]);
 
+% figure;
+% subplot(2,2,1);
+% imshow(double(data(7).image(1).each_image),[]);
+% title('DIR Grey Matter')
+% subplot(2,2,2);
+% imshow(double(data(8).image(1).each_image),[]);
+% title('DIR White Matter')
+% 
+% subplot(2,2,3);
+% imshow(grey,[]);
+% title('Grey Matter Mask(Threshold = 10000)')
+% subplot(2,2,4);
+% imshow(white,[]);
+% title('White Matter Mask(Threshold = 12000)')
 
 
 %% PCASL control-label, M0 normalization and T1 correction
@@ -115,28 +128,24 @@ for i = 1:16
 end
 
 
-point = [];
-figure;
-for i = 1:16
-    subplot(4,4,i);
-    imshow(data(6).image(i).average_diff_g,[0.0001 0.1]);
-    each = data(6).image(i).average_diff_g(42,40);
-    point = [point, each];
-end
-figure;
-plot(point);
+
+% figure;
+% for i = 1:16
+%     subplot(4,4,i);
+%     imshow(data(6).image(i).average_diff_g,[0.0001 0.1]);
+%     each = data(6).image(i).average_diff_g(42,40);
+% end
 
 
-% imshow(data(6).image(3).average_diff_g,[]);
 
 
 
 %% Line Fit to evaluate CBF
 
-constant = 6000*0.9/(2*0.85*1650);
+constant = 6000*0.9;
 
-CBF_g = zeros(320,320);
-CBF_w = zeros(320,320);
+CBF_g_line = zeros(320,320);
+CBF_w_line = zeros(320,320);
 pointw_matrix = [];
 pointg_matrix = [];
 slope_w = [];
@@ -154,7 +163,7 @@ for i = 1:size(white,1)
             [maxi I] = max(points1);
             pointg_matrix = [pointg_matrix; points1];
             [gradient, inter] = linear_fit(double(TI(index:I)),double(points1(index:I)));
-            CBF_g(i,j) = gradient;
+            CBF_g_line(i,j) = gradient;
         end
         a = 1;
         if white(i,j) == 1
@@ -165,7 +174,7 @@ for i = 1:size(white,1)
             [mini2 index2] = min(points2);
             [maxi2 I2] = max(points2);
             [gradient2, inter2] = linear_fit(double(TI(index2:I2)),double(points2(index2:I2)));
-            CBF_w(i,j) = gradient2;
+            CBF_w_line(i,j) = gradient2;
             pointw_matrix = [pointw_matrix; points2];
         end
 
@@ -173,25 +182,16 @@ for i = 1:size(white,1)
 end
 
 
-CBF_g = CBF_g*constant;
-CBF_w = CBF_w*constant;
+CBF_g_line = CBF_g_line*constant;
+CBF_w_line = CBF_w_line*constant;
 
 
-% figure;
-% plot(1:16, pointw_matrix(3000,:));   
+
+
+figure;
+imshow(CBF_w_line,[0.0001 0.001]);
 
 figure;
-imshow(CBF_w,[0.0001 0.001]);
+imshow(CBF_g_line,[0.0001 0.001]);
 
-figure;
-imshow(CBF_g,[0.0001 0.001]);
-
-
-
-% information = data(1).image(1).info;
-% DIR = data(8).image;
-% DIR2 = data(7).image;
-% imshow(DIR(1).each_image-DIR(2).each_image,[]);
-% figure;
-% imshow(DIR2(1).each_image-DIR2(2).each_image,[])
 

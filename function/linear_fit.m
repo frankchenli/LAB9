@@ -5,7 +5,7 @@ xdata = time;
 ydata = data_sequence;
 
 fun = @(x, xdata) x(1)*xdata+x(2);
-x0 = [0.1,0.1];
+x0 = [0.0001,0.1];
 x = lsqcurvefit(fun,x0,xdata,ydata);
 
 gradient = x(1);
