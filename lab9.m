@@ -29,7 +29,7 @@ for i = 1:8
 end
 
 
-%% PASL Average 24 times 
+%% Single PASL Average 24 times 
 a = 1;
 all = zeros(320,320);
 for i = 2:2:48
@@ -42,7 +42,7 @@ end
 
 PASL_ave = all/24;
 
-imshow(PASL_ave,[5 100]);
+% imshow(PASL_ave,[5 100]);
 
 
 
@@ -50,19 +50,33 @@ imshow(PASL_ave,[5 100]);
 grey = double(data(7).image(1).each_image);
 white = double(data(8).image(1).each_image);
 
-grey(grey<10000) = 0;
-grey(grey>=10000) = 1;
+grey(grey<12000) = 0;
+grey(grey>=12000) = 1;
 
 
-white(white<13000) = 0;
-white(white>=13000) = 1;
+white(white<14000) = 0;
+white(white>=14000) = 1;
 
 imshow(white,[]);
 
 
 
-%% PCASL control-label
-% all = zeros(320,320);
+%% PCASL control-label, M0 normalization and T1 correction
+
+PLD = [0 0 0 0 0 0 200 400 600 800 1000 1200 1400 1600 1800 2000];
+tau = [800 1000 1200 1400 1600 1800 1800 1800 1800 1800 1800 1800 1800 1800 1800 1800];
+TI = PLD+tau;
+T1_blood = 1650;
+T1_cor = exp(PLD/T1_blood)./(1-exp(-(tau/T1_blood)));
+
+% figure;
+% exmp = [1 2 3 4 5 6 6 6 6 6 6 6 6 6 6 6];
+% decay = exmp./T1_cor;
+% plot(decay);
+% hold on
+% plot(decay.*T1_cor);
+
+
 
 Mo_g = double(data(6).image(1).each_image).*grey;
 Mo_g(Mo_g == 0) = 1;
@@ -70,7 +84,6 @@ Mo_w = double(data(6).image(1).each_image).*white;
 Mo_w(Mo_w == 0) = 1;
 
 for i = 2:2:64
-    
 
 
     label_g = double(data(6).image(i).each_image).*grey;
@@ -82,45 +95,96 @@ for i = 2:2:64
     control_w = double(data(6).image(i+1).each_image).*white;
     data(6).image(i).diff_wm = abs(double(control_w-label_w)./Mo_w);
 
-    % all = all+data(6).image(i).diff;
 end
 
-%Average each pair
+
+%Average each pair and T1 correction
 a = 1;
 for i = 2:2:32
-    data(6).image(a).average_diff_g = (data(6).image(i).diff_gm+data(6).image(i+32).diff_gm)/2;
+    data(6).image(a).average_diff_g = T1_cor(a)*(data(6).image(i).diff_gm+data(6).image(i+32).diff_gm)/2;
     data(6).image(a).average_diff_w = (data(6).image(i).diff_wm+data(6).image(i+32).diff_wm)/2;
     a = a+1;
 end
 
 
+%% Formula Evaluate CBF for PCASL
+
+for i = 1:16
+    CBF_g(:,:,i) = (6000*0.9*data(6).image(i).average_diff_g*T1_cor(i))/(2*0.85*1650);
+    CBF_w(:,:,i) = (6000*0.9*data(6).image(i).average_diff_w*T1_cor(i))/(2*0.85*1650);
+end
 
 
-%% Evaluate CBF for PCASL
 point = [];
 figure;
 for i = 1:16
     subplot(4,4,i);
-    imshow(data(6).image(i).average_diff_w,[]);
-    % each = data(6).image(i).average_diff(147,150);
-    % point = [point, each];
+    imshow(data(6).image(i).average_diff_g,[0.0001 0.1]);
+    each = data(6).image(i).average_diff_g(42,40);
+    point = [point, each];
 end
+figure;
+plot(point);
+
+
+% imshow(data(6).image(3).average_diff_g,[]);
+
+
+
+%% Line Fit to evaluate CBF
+
+constant = 6000*0.9/(2*0.85*1650);
+
+CBF_g = zeros(320,320);
+CBF_w = zeros(320,320);
+pointw_matrix = [];
+pointg_matrix = [];
+slope_w = [];
+slope_g = [];
+for i = 1:size(white,1)
+    for j = 1:size(white,2)
+        points1 = [];
+        points2 = [];
+        if grey(i,j) == 1
+            for k = 1:16
+                point = data(6).image(k).average_diff_g(i,j);
+                points1 = [points1 point];
+            end
+            [mini index] = min(points1);
+            [maxi I] = max(points1);
+            pointg_matrix = [pointg_matrix; points1];
+            [gradient, inter] = linear_fit(double(TI(index:I)),double(points1(index:I)));
+            CBF_g(i,j) = gradient;
+        end
+        a = 1;
+        if white(i,j) == 1
+            for k = 1:16
+                point2 = data(6).image(k).average_diff_w(i,j);
+                points2 = [points2 point2];
+            end
+            [mini2 index2] = min(points2);
+            [maxi2 I2] = max(points2);
+            [gradient2, inter2] = linear_fit(double(TI(index2:I2)),double(points2(index2:I2)));
+            CBF_w(i,j) = gradient2;
+            pointw_matrix = [pointw_matrix; points2];
+        end
+
+    end
+end
+
+
+CBF_g = CBF_g*constant;
+CBF_w = CBF_w*constant;
+
+
 % figure;
-% plot(point);
+% plot(1:16, pointw_matrix(3000,:));   
 
-imshow(data(6).image(3).average_diff_g,[]);
+figure;
+imshow(CBF_w,[0.0001 0.001]);
 
-
-PLD = [0 0 0 0 0 0 200 400 600 800 1000 1200 1400 1600 1800 2000];
-tau = [800 1000 1200 1400 1600 1800 1800 1800 1800 1800 1800 1800 1800 1800 1800 1800];
-TI = PLD+tau;
-
-
-
-
-
-
-% stem()
+figure;
+imshow(CBF_g,[0.0001 0.001]);
 
 
 
