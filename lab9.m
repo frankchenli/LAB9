@@ -214,12 +214,18 @@ CBF_w_line = CBF_w_line*constant;
 
 figure;
 subplot(1,2,1)
-imshow(CBF_w_line+CBF_g_line,[20 100]);
+imshow(CBF_w_line+CBF_g_line,[5 100]);
 title('Linear Fit Gradient Whole Brain CBF','FontSize', 20)
 
 subplot(1,2,2)
-imshow(CBF_w+CBF_g,[20 100]);
+imshow(CBF_w+CBF_g,[5 100]);
 title('Equation Evaluated Whole Brain CBF','FontSize', 20)
+sgtitle('Window Level = [5, 100]')
+
+
+figure;
+imshow(abs(CBF_w+CBF_g-CBF_w_line-CBF_g_line),[5 100]);
+title('Whole Brain CBF Difference (Equation Result - Line fit Result)','FontSize', 20)
 sgtitle('Window Level = [5, 100]')
 
 
