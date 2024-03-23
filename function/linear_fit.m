@@ -11,8 +11,11 @@ x = lsqcurvefit(fun,x0,xdata,ydata);
 gradient = x(1);
 inter = x(2);
 
-% times = linspace(xdata(1),xdata(end));
-% figure; plot(times, fun(x,times));hold on; plot(xdata,ydata);
+% times = xdata;
+% figure; plot([xdata 3200 3400 3600 3800], [fun(x,times) NaN NaN NaN NaN]);hold on; plot([xdata 3200 3400 3600 3800],[ydata 59601 54885 57932 54918]);
+% xlabel('Inversion Time');
+% ylabel('Signal Intensity');
+% title('Fit Linear Line (Gradient = 27.9)')
 % legend('fit','original')
-    
+
 end

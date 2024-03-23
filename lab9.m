@@ -91,9 +91,9 @@ T1_cor = exp(PLD/T1_blood)./(1-exp(-(tau/T1_blood)));
 
 
 
-Mo_g = double(data(6).image(1).each_image).*grey;
+Mo_g = 10*double(data(6).image(1).each_image).*grey;
 Mo_g(Mo_g == 0) = 1;
-Mo_w = double(data(6).image(1).each_image).*white;
+Mo_w = 10*double(data(6).image(1).each_image).*white;
 Mo_w(Mo_w == 0) = 1;
 
 for i = 2:2:64
@@ -120,29 +120,55 @@ for i = 2:2:32
 end
 
 
-%% Formula Evaluate CBF for PCASL
-
-for i = 1:16
-    CBF_g(:,:,i) = (6000*0.9*data(6).image(i).average_diff_g*T1_cor(i))/(2*0.85*1650);
-    CBF_w(:,:,i) = (6000*0.9*data(6).image(i).average_diff_w*T1_cor(i))/(2*0.85*1650);
-end
-
-
 
 % figure;
 % for i = 1:16
 %     subplot(4,4,i);
-%     imshow(data(6).image(i).average_diff_g,[0.0001 0.1]);
-%     each = data(6).image(i).average_diff_g(42,40);
+%     imshow(data(6).image(i).average_diff_w,[0.0001 0.05]);
 % end
+% sgtitle('White Matter Perfusion Images(Control - Label)')
 
 
+%% Formula Evaluate CBF for PCASL
 
+for i = 1:16
+    CBF_g(:,:,i) = (6000*0.9*data(6).image(i).average_diff_g*T1_cor(i))/(2*0.85*1.65);
+    CBF_w(:,:,i) = (6000*0.9*data(6).image(i).average_diff_w*T1_cor(i))/(2*0.85*1.65);
+end
 
+CBF_g = mean(CBF_g,3);
+CBF_w = mean(CBF_w,3);
+
+subplot(1,2,1);
+imshow(CBF_g,[5 100]);
+title('Grey Matter CBF(Window[5, 100])')
+subplot(1,2,2);
+imshow(CBF_w,[5 20]);
+title('White Matter CBF(Window[5, 20])')
+
+figure;
+imshow(CBF_g+CBF_w,[5 100]);
+title('Brain CBF')
 
 %% Line Fit to evaluate CBF
 
-constant = 6000*0.9;
+constant = 6000*0.9*1000;
+
+
+% all  = [];
+% for i = 1:16
+%     each = data(6).image(i).average_diff_g(170,145);
+%     all = [all each];
+% end
+% all = all*constant/10;
+% plot(TI, all);
+% xlabel('Inversion Time');
+% ylabel('Signal Intensity');
+% title('Pixel(170,145)')
+% [a,b] = linear_fit(TI(1:12),all(1:12));
+
+
+
 
 CBF_g_line = zeros(320,320);
 CBF_w_line = zeros(320,320);
@@ -186,12 +212,14 @@ CBF_g_line = CBF_g_line*constant;
 CBF_w_line = CBF_w_line*constant;
 
 
-
-
 figure;
-imshow(CBF_w_line,[0.0001 0.001]);
+subplot(1,2,1)
+imshow(CBF_w_line+CBF_g_line,[20 100]);
+title('Linear Fit Gradient Whole Brain CBF','FontSize', 20)
 
-figure;
-imshow(CBF_g_line,[0.0001 0.001]);
+subplot(1,2,2)
+imshow(CBF_w+CBF_g,[20 100]);
+title('Equation Evaluated Whole Brain CBF','FontSize', 20)
+sgtitle('Window Level = [5, 100]')
 
 
